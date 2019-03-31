@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Quadratic calculator</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.sound.min.js"></script>
+ 
+	<link href="https://fonts.googleapis.com/css?family=Parisienne" rel="stylesheet">
+	<style type="text/css">
+		.container{
+			font-family: "Times New Roman", Times, serif;
+		}
+		.displayLetters{
+			color: orange;
+		}
+		.display{
+			font-size: 50px;
+			text-align: center;	
+		}
+		.inputBtns{
+			text-align: center;
+			font-size: 35px;
+
+
+		}
+		.inputLetters{
+			display: inline-block;
+			padding-right: 85px;
+			text-align: center;
+			line-height: 0;
+
+		}
+		.numberInputs{
+			font-size: 25px;
+			height: 25px;
+			width: 80px;
+			padding: 10px 10px;
+
+		}
+		#extras{
+			font-size: 35px;
+		}
+	 	canvas{
+	        border-style: solid;
+	        display: block;
+  	     	border-width: 1px;
+  	     	margin-left: auto;
+  	     	margin-right: auto;
+
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="display">
+			<p style="display: block;" id="test"></p>
+			<p id="extras">Discriminant: <b><var id="discrimante"></var></b>, Vertex: <b><var id="vertex"></var></b>, Axis of Sym: <b><var id="aos"></var></b></p>
+			<p>
+				<var class="displayLetters" id="displayA">a</var>x<sup>2</sup> + <var id="displayB" class="displayLetters">b</var>x + <var class="displayLetters" id="displayC">c</var>
+			</p>
+			<p> </p>
+		</div>
+
+		<div class="inputBtns">
+			<!-- the extra p element is to offest the letters to be centered above the inputs -->
+			<p class="inputLetters"></p>
+			<p class="inputLetters">a</p>
+			<p class="inputLetters">b</p>
+			<p class="inputLetters">c</p><br>
+			<input oninput="updateText('inputA','displayA','a')" class="numberInputs" type="number" id="inputA">
+			<input oninput="updateText('inputB','displayB','b')" class="numberInputs" type="number" id="inputB">
+			<input oninput="updateText('inputC','displayC','c')" class="numberInputs" type="number" id="inputC"><br><br><br>
+
+		</div>
+	</div>
+
+<script type="text/javascript">
+	//--------------------------------------
+var graphFlag = false;
+var vertexCor;
+var canvasX;
+var canvasY;
+function setup() {
+  createCanvas(500, 500);
+
+//20 2 0
+}
+
+function draw() {
+	clear();
+// draws axises
+strokeWeight(2);
+stroke('black');
+
+	line(250, 0, 250, 500);
+	line(0, 250, 500, 250);
+// draw tick marks
+	strokeWeight(1);
+	stroke('red');
+
+	//postive x ticks
+    line(312,243,312,257);
+    line(374,243,374,257);
+    line(436,243,436,257);
+    line(495,243,495,257);
+    //negative x ticks 
+    line(188,243,188,257);
+	line(126,243,126,257);
+	line(64,243,64,257);
+	line(5,243,5,257);
+    //postive y ticks
+	line(243,188,257,188);
+	line(243,126,257,126);
+	line(243,64,257,64);
+	line(243,5,257,5);
+	//negative y ticks
+	line(243,312,257,312);
+    line(243,374,257,374);
+    line(243,436,257,436);
+    line(243,495,257,495);
+    //putting numbers under tick marks
+    textSize(13);
+    strokeWeight(0);
+    stroke('black');
+    //pos x axis
+    text('0', 255, 270);
+    text('25', 306, 270);
+	text('50', 368, 270);
+	text('75', 429, 270);
+	text('100', 477, 270);
+	// negative x axis
+	text('-25', 177, 270);
+	text('-50', 115, 270);
+	text('-75', 52, 270);
+	text('-100', 1, 270);
+	//postive y axis
+	text('25', 261, 193);
+	text('50', 261, 132);
+	text('75', 261, 70);
+	text('100', 261, 11);
+	//negative y axis
+	text('-25', 261, 316);
+	text('-50', 261, 378);
+	text('-75', 261, 440);
+	text('-100', 261, 499);
+
+// curve 
+if (graphFlag){
+	strokeWeight(3);
+	var a = Number(document.getElementById('inputA').value);
+	var b = Number(document.getElementById('inputB').value);
+	var c = Number(document.getElementById('inputC').value);
+	var y;
+	for (var x = -100; x <= 100; x+=0.01) {
+
+		y = (Math.pow(x, 2)*a) + (b * x) +c;	
+		translatePoint(x,y);
+		point(canvasX, canvasY);
+	}
+}
+
+}
+function translatePoint(x,y) {
+	canvasX = 250 + (2.48*x);
+	canvasY = 250 - (2.48*y);
+}
+
+	//--------------------------------------
+
+
+	function solve() {
+		var a = Number(document.getElementById('inputA').value);
+		var b = Number(document.getElementById('inputB').value);
+		var c = Number(document.getElementById('inputC').value);
+
+
+		var displayRoot;
+
+		var discrimante = Math.pow(b, 2) - (4 * a * c);
+		var Vx = ((-b)/(2*a));
+		var Vy = (Math.pow(Vx, 2)*a) + (b * Vx) +c;
+
+		var sqrtDiscrimante= simplfyRad(discrimante);
+
+		var roots = displayRoots((2*a),b,sqrtDiscrimante);
+
+		if (roots[0]==roots[1]) {
+ 
+			displayRoot = roots[0];
+		}else{
+			displayRoot=roots[0]+" and "+roots[1];
+		}
+		document.getElementById('test').innerHTML = displayRoot;
+		document.getElementById('test').style.display='block';
+		document.getElementById('discrimante').innerHTML = discrimante;
+		document.getElementById('aos').innerHTML ="x = " + Vx;
+		document.getElementById('vertex').innerHTML ="("+Vx+","+Vy+")";
+		graphFlag = true;
+		vertexCor = [Vx,Vy];
+
+	}
+
+
+	function displayRoots(twoa,b,sqrt4ac) {
+		var res1;
+		var res2;
+		var openingP = "(";
+		var closingP = "  )";
+		var gcd= gcd_more_than_two_numbers([twoa,b,coefficient]);
+
+		if (imaginaryGate && remainder ==1) {
+			var newCoefficient = coefficient/gcd;
+			var newB = -1*(b/gcd);
+			if (coefficient/gcd==1) {
+				newCoefficient="";
+  
+			}
+			if (newB==0) {
+				newB="";
+			}
+
+			res1 = newB +"+"+newCoefficient + imaginary;
+			res2 = newB+"-"+newCoefficient + imaginary;
+		}else{
+			
+			b = Math.abs(b);
+			res1 = '(-'+b + " - "+ sqrt4ac + ") /"+twoa;
+			res2 = "(-"+b + " + "+ sqrt4ac + ") /"+twoa;
+			if (remainder == 1|| remainder == 0) {
+
+				//see notebook on pg9 on why its coefficient * remainder
+				res1 = '(-'+b + " - "+ (coefficient*remainder) + ") /"+twoa;
+				res2 = "(-"+b + " + "+ (coefficient*remainder) + ") /"+twoa;
+
+//the code below was a loose patch to the infinte decimal problem i had ex:56x^2 + 96x +0 
+//res1 and res2 are strings because i need to get the length of the value
+				res1 = String(eval(res1));
+				res2 = String(eval(res2));
+				//if the value length is greater than 9 than i display it in fraction form 
+				if (res1.length > 9) {
+					let ranOutofNames = (-1*Number(b)) -  Number(sqrt4ac);
+					let gcf = gcd_two_numbers(ranOutofNames,twoa);
+					//this just checks if its a negative divided by a negative if so then just display them as their abosulte value
+					if (ranOutofNames < 0 && twoa < 0) {
+						ranOutofNames=Math.abs(ranOutofNames);
+						twoa=Math.abs(twoa);
+
+					}
+					res1 = (ranOutofNames/gcf)+"/"+(twoa/gcf);
+				}
+
+
+			}else {
+				if (gcd>1) {
+					var newCoefficient = coefficient/gcd;
+					var newB = '-'+(b/gcd);
+					var newA = "/"+twoa/gcd;
+					switch(true){
+						case(newB.match(/\d+/)==0):
+							newB="";
+						case(newA.match(/\d+/)==1):
+							newA= "";
+							openingP ="";
+							closingP = "";
+						//case(newCoefficient==1): why doesnt this work!!!!!!!!!! 
+						//alert(newCoefficient);      :'(
+						//	newCoefficient= "";
+						case(true):
+							//this is to stop the computer from looking into anymore cases
+							break;	
+					}
+					if (newCoefficient ==1) {
+						newCoefficient = "";
+					}	
+					res1 = openingP + newB + " - "+ newCoefficient+imaginary+"√("+remainder+")" + closingP+newA;
+					res2 = openingP +newB + " + "+ newCoefficient+imaginary+"√("+remainder+")" +closingP+newA;				
+				}	
+	
+
+
+		}
+	}
+
+
+
+
+		return  [res1,res2];
+	}
+	
+	function simplfyRad(num) {
+		imaginary = "";
+		if (Math.abs(num)!=num) {
+			imaginary= "i";
+			num = Math.abs(num)
+		}
+		coefficient= 1;
+		remainder = num;
+		var out;
+		for (var i = 1; (i*i) <= num; i++) {
+			if (num %(i*i)== 0){
+		 		 coefficient= i;
+		 		 remainder = num / (i*i);
+			}
+		} 
+		switch(true){
+			case(coefficient==1):
+				out = imaginary + "√("+remainder+")";
+				break;
+			case(coefficient==1 && remainder == 1):
+				out = "1"+imaginary;
+				break;
+			case(remainder==1):
+				out = coefficient.toString() +imaginary;
+				break;
+			case(true):
+				out = coefficient + imaginary +"√("+remainder+")";
+				break;
+				
+		}
+		if (imaginary=="i") {
+			imaginaryGate=true;
+		}else{
+			imaginaryGate=false;
+		}
+		if (remainder == 0) {
+			return (0);
+		}else if (remainder==1) {
+			return(1);
+		}else{
+			return(out);
+		}
+
+	}
+
+	function updateText(inputId,displayId,base) {
+		var displayOut = document.getElementById(displayId);
+		var inputVal = document.getElementById(inputId).value;
+		if (inputVal == "") {
+			//base is just so i know what letter i can revert to
+			displayOut.innerHTML = base;
+			return
+
+		} else{
+			displayOut.innerHTML = Number(inputVal);
+		}
+		solve();
+	}
+	
+	//credit for the code below to 
+	//https://www.w3resource.com/javascript-exercises/javascript-math-exercise-9.php 
+	function gcd_more_than_two_numbers(input) {
+	  if (toString.call(input) !== "[object Array]")  
+	        return  false;  
+	  var len, a, b;
+		len = input.length;
+		if ( !len ) {
+			return null;
+		}
+		a = input[ 0 ];
+		for ( var i = 1; i < len; i++ ) {
+			b = input[ i ];
+			a = gcd_two_numbers( a, b );
+		}
+		return a;
+	}
+
+	function gcd_two_numbers(x, y) {
+	  if ((typeof x !== 'number') || (typeof y !== 'number')) 
+	    return false;
+	  x = Math.abs(x);
+	  y = Math.abs(y);
+	  while(y) {
+	    var t = y;
+	    y = x % y;
+	    x = t;
+	  }
+	  return x;
+	}
+
+
+	
+</script>
+</body>
+
+</html>
